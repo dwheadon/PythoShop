@@ -1,9 +1,10 @@
 import students
 import glob
 import shutil
-import testFiles
 import os
 from stat import S_IREAD, S_IRGRP, S_IROTH, S_IWRITE, S_IWGRP, S_IWOTH
+
+import tests.config as config
 
 
 def copy_readonly_files(files, destination_folder):
@@ -52,7 +53,7 @@ test_files += glob.glob("/Users/danwheadon/Projects/PythoShop/tests/test_3*")
 test_files += glob.glob("/Users/danwheadon/Projects/PythoShop/tests/test_4*")
 test_files += glob.glob("/Users/danwheadon/Projects/PythoShop/tests/test_5*")
 test_files += glob.glob("/Users/danwheadon/Projects/PythoShop/tests/test_6*")
-# for file in testFiles.file_names:
+# for file in config.FILE_NAMES:
 #     files += ["./"+file+".bmp"]
 
 for student_folder in students.student_folders:
