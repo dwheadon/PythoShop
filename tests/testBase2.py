@@ -1,33 +1,7 @@
 import testBase
 import tempfile
 import random
-import signal
-import platform
 import io
-
-
-class TestTimeout(Exception):
-    pass
-
-
-class test_timeout:
-    def __init__(self, seconds, error_message=None):
-        if error_message is None:
-            error_message = 'test timed out after {}s.'.format(seconds)
-            self.seconds = seconds
-            self.error_message = error_message
-
-    def handle_timeout(self, signum, frame):
-        raise TestTimeout(self.error_message)
-
-    def __enter__(self):
-        if not "Windows" in platform.system():
-            signal.signal(signal.SIGALRM, self.handle_timeout)
-            signal.alarm(self.seconds)
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        if not "Windows" in platform.system():
-            signal.alarm(0)
 
 
 class TestBase2(testBase.TestBase):
@@ -42,7 +16,7 @@ class TestBase2(testBase.TestBase):
         self.__class__.test_parameters = self.__class__.test_parameters.copy()
 
     def test_images(self):
-        with test_timeout(1000000):
+        with testBase.TestTimeout(1000000):
             if self.image_sets is None:
                 assert False
             for image1_name, image2_name in self.image_sets:

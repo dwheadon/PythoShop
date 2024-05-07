@@ -11,11 +11,11 @@ import platform
 import io
 
 
-class TestTimeout(Exception):
+class TestTimeoutException(Exception):
     pass
 
 
-class test_timeout:
+class TestTimeout:
     def __init__(self, seconds, error_message=None):
         if error_message is None:
             error_message = 'test timed out after {}s.'.format(seconds)
@@ -23,7 +23,7 @@ class test_timeout:
             self.error_message = error_message
 
     def handle_timeout(self, signum, frame):
-        raise TestTimeout(self.error_message)
+        raise TestTimeoutException(self.error_message)
 
     def __enter__(self):
         if not "Windows" in platform.system():
@@ -35,7 +35,7 @@ class test_timeout:
             signal.alarm(0)
 
 
-class TestBase(object):
+class TestBase:
     original_images = {}
     solution_images = {}
     test_parameters = {
@@ -127,7 +127,7 @@ class TestBase(object):
         pickled_solutions.close()
 
     def test_images(self):
-        with test_timeout(10):
+        with TestTimeout(10):
             for image_set in self.image_sets:
                 image = image_set[0]
                 with self.subTest(i=image_set):
