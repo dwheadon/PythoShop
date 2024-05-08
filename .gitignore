@@ -5,7 +5,7 @@ __pycache__
 *.jpg
 *.pickle
 ImageManip*.py
-admin*/
+admin/students.py
 *.zip
 *.tsv
 *.csv
