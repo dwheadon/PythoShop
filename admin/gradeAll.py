@@ -1,12 +1,12 @@
-import unittest
-import sys
-import os
-import students
-import subprocess
-import io
 import glob
 import importlib.util
+import io
+import os
+import subprocess
+import sys
+import unittest
 
+import students
 
 test_files = glob.glob("test_0*.py")
 test_files += glob.glob("test_1*.py")
@@ -22,12 +22,12 @@ def dummyInput(prompt=None):
     raise RuntimeError("You should not be calling the input function within your manipulation functions (only in __main__)")
 
 
-def dummyRun(args, *, stdin=None, input=None, stdout=None, stderr=None, capture_output=False, shell=False, cwd=None, timeout=None, check=False, encoding=None, errors=None, text=None, env=None, universal_newlines=None):
+def dummyRun(args, **kwargs):
     raise RuntimeError("You should not be calling the subprocess.run function within your manipulation functions (only in __main__)")
 
 
-sys.modules['subprocess'].run = dummyRun
-sys.modules['builtins'].input = dummyInput
+sys.modules["subprocess"].run = dummyRun
+sys.modules["builtins"].input = dummyInput
 
 
 class TestResult(unittest.TextTestResult):
@@ -40,7 +40,7 @@ class TestResult(unittest.TextTestResult):
     def addPoints(self, test):
         # assert not hasattr(test, 'test_weight'), "Test " + str(test) + " doesn't have a weight"
         assert test.test_weight != 0, "Test " + str(test) + " has zero weight"
-        assert type(test).__name__ == "Test" or type(test).__name__ == "Extension", "Test " + str(test) + " is not named \"Test\" or \"Extension\""
+        assert type(test).__name__ == "Test" or type(test).__name__ == "Extension", "Test " + str(test) + ' is not named "Test" or "Extension"'
         if type(test).__name__ == "Test":
             self.points_total += test.test_weight
 
@@ -52,8 +52,8 @@ class TestResult(unittest.TextTestResult):
     def addSkip(self, test, reason):
         super().addSkip(test, reason)
         # What a hack but I can't see any other way to get this
-        skipped_module_name = test.description[test.description.find("(")+1: test.description.find(".")]
-        skipped_class_name = test.description[test.description.find(".")+1: test.description.find(")")]
+        skipped_module_name = test.description[test.description.find("(") + 1 : test.description.find(".")]
+        skipped_class_name = test.description[test.description.find(".") + 1 : test.description.find(")")]
         if skipped_class_name == "Test":
             skipped_module = __import__(skipped_module_name)
             if skipped_class_name in dir(skipped_module):
@@ -61,10 +61,10 @@ class TestResult(unittest.TextTestResult):
                 self.points_total += skipped_class.test_weight
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print("\tTotal\t", end="")
     for test_file in test_files:
-        test_package = test_file[:test_file.find(".")]
+        test_package = test_file[: test_file.find(".")]
         print(test_package, end="\t")
     print("")
     for student_folder in students.student_folders:
@@ -119,7 +119,7 @@ if __name__ == '__main__':
         grade_str = str(grade)
         sys.stdout = orig_stdout
         for test_file in test_files:
-            test_package = test_file[:test_file.find(".")]
+            test_package = test_file[: test_file.find(".")]
             test_module = __import__(test_package)
             # spec = importlib.util.spec_from_file_location(test_package, student_folder + "/" + test_file)
             # test_module = importlib.util.module_from_spec(spec)

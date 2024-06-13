@@ -10,24 +10,7 @@ def dummyInput(prompt=None):
     raise RuntimeError("You should not be calling the input function within your manipulation functions (only in __main__)")
 
 
-def dummyRun(
-    args,
-    *,
-    stdin=None,
-    input=None,
-    stdout=None,
-    stderr=None,
-    capture_output=False,
-    shell=False,
-    cwd=None,
-    timeout=None,
-    check=False,
-    encoding=None,
-    errors=None,
-    text=None,
-    env=None,
-    universal_newlines=None
-):
+def dummyRun(args, **kwargs):
     raise RuntimeError("You should not be calling the subprocess.run function within your manipulation functions (only in __main__)")
 
 

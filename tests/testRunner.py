@@ -1,19 +1,19 @@
-import unittest
-import sys
-import os
+#!/usr/bin/env python3
 import subprocess
+import sys
+import unittest
 
 
 def dummyInput(prompt=None):
     raise RuntimeError("You should not be calling the input function within your manipulation functions (only in __main__)")
 
 
-def dummyRun(args, *, stdin=None, input=None, stdout=None, stderr=None, capture_output=False, shell=False, cwd=None, timeout=None, check=False, encoding=None, errors=None, text=None, env=None, universal_newlines=None):
+def dummyRun(args, **kwargs):
     raise RuntimeError("You should not be calling the subprocess.run function within your manipulation functions (only in __main__)")
 
 
-sys.modules['subprocess'].run = dummyRun
-sys.modules['builtins'].input = dummyInput
+sys.modules["subprocess"].run = dummyRun
+sys.modules["builtins"].input = dummyInput
 
 
 class TestResult(unittest.TextTestResult):
@@ -25,7 +25,7 @@ class TestResult(unittest.TextTestResult):
 
     def addPoints(self, test):
         assert test.test_weight != 0, "Test " + str(test) + " has zero weight"
-        assert type(test).__name__ == "Test" or type(test).__name__ == "Extension", "Test " + str(test) + " is not named \"Test\" or \"Extension\""
+        assert type(test).__name__ == "Test" or type(test).__name__ == "Extension", "Test " + str(test) + ' is not named "Test" or "Extension"'
         if type(test).__name__ == "Test":
             self.points_total += test.test_weight
 
@@ -38,8 +38,8 @@ class TestResult(unittest.TextTestResult):
     def addSkip(self, test, reason):
         super().addSkip(test, reason)
         # What a hack but I can't see any other way to get this
-        skipped_module_name = test.description[test.description.find("(")+1: test.description.find(".")]
-        skipped_class_name = test.description[test.description.find(".")+1: test.description.find(")")]
+        skipped_module_name = test.description[test.description.find("(") + 1 : test.description.find(".")]
+        skipped_class_name = test.description[test.description.find(".") + 1 : test.description.find(")")]
         print("#", end="", flush=True)
         if skipped_class_name == "Test":
             skipped_module = __import__(skipped_module_name)
@@ -48,8 +48,7 @@ class TestResult(unittest.TextTestResult):
                 self.points_total += skipped_class.test_weight
 
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     testSuite = unittest.defaultTestLoader.discover(".")
     testProgram = unittest.TextTestRunner(stream=sys.stdout, verbosity=2)
     testProgram.resultclass = TestResult

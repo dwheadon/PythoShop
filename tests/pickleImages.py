@@ -1,11 +1,12 @@
-import pickle
-import ImageManip
-import unittest
-import tests.config as config
-import random
 import os
+import pickle
+import random
+import unittest
 
-if __name__ == '__main__':
+import ImageManip
+import tests.config as config
+
+if __name__ == "__main__":
     # Pickle up the originals
     original_images = {}
     pickle_file_name = "testOriginals.pickle"
@@ -28,7 +29,7 @@ if __name__ == '__main__':
         test_image_sets = test._tests[0]._tests[0].image_sets
         args_name = ""
         for param, value in test_args.items():
-            args_name += "_"+param+"_"+str(value)
+            args_name += "_" + param + "_" + str(value)
         solution_images = {}
         pickle_file_name = test._tests[0]._tests[0].__module__ + ".pickle"
         if test_image_sets is None:
@@ -36,9 +37,9 @@ if __name__ == '__main__':
         for original_file_names in test_image_sets:
             random.seed(0)  # make it predictably random
             original_files = []
-            solution_file_name = test_name + args_name + "-" + '-'.join(original_file_names) + ".bmp"
+            solution_file_name = test_name + args_name + "-" + "-".join(original_file_names) + ".bmp"
             solution_file = open(solution_file_name, "wb+")
-            solution_file.write(original_images[original_file_names[0]+".bmp"])
+            solution_file.write(original_images[original_file_names[0] + ".bmp"])
             original_files.append(solution_file)
             solution_file.seek(0)
             other_image = None
@@ -48,7 +49,7 @@ if __name__ == '__main__':
                 original_file_name = original_file_names[1] + ".bmp"
                 other_image = open(os.path.join("images", original_file_name), "rb")
             else:
-                raise(ValueError("Files for this test can be 1 or 2 files only"))
+                raise (ValueError("Files for this test can be 1 or 2 files only"))
             testFunction = getattr(ImageManip, test_name)
             result = testFunction(*original_files, other_image=other_image, **test_args)
             if result is not None:

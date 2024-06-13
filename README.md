@@ -75,3 +75,15 @@ this too soon makes some of them become a bit... nervous. Therefore, it's
 worth commenting out the "Grades Summary" portion of `tests/testRunner.py
 for a while.
 
+## Student Worksheets:
+
+- [Introducing PythoShop](https://docs.google.com/document/d/1g1RA-NLC01QCBBWy5LWMphcEQ6kaVM70Wm33Kna9zIc)
+- [Change a Pixel](https://docs.google.com/document/d/10ixboNZ9LKIlJtmBCsg7oaiBkiwo4tE7KwQ6487hVt4)
+- [Changing Multiple Pixels](https://docs.google.com/document/d/1VsGjwLAEnsD8jrj4NkcQa-DkDLqpx8JfnZxR0aXQrUA)
+- [Drawing Lines](https://docs.google.com/document/d/1PN4H_UfJRBfweR6_DANoY8IhvBSZrWSRTzbPhm9_1DE)
+- [Changing Parts of Pixels](https://docs.google.com/document/d/1nFgX9g3VJ2vLZTa5UpXp-M0sHH-ptAuvBtOI-VKk7rs)
+- [Changing Pixels Based on Values](https://docs.google.com/document/d/1quhM7NCbaOja-R4JQ8d_qdEOGgqb_C74HHFZqFNP-RI)
+- [Conditional Modification of Pixels](https://docs.google.com/document/d/1M5RNemHSwWKrdkXdX99B0lmt745Utc6kPVBbA4h2iVA)
+- [Blending Pictures](https://docs.google.com/document/d/1B0l7wSQuW1Y8C-Ky2lzlXeN-awUwauqXirqJi1lLWf0)
+- [Pixel Positions](https://docs.google.com/document/d/1-cvMjR8fIeU1un9bjwW832wDIH-8XBZweGpiZqLj524)
+
