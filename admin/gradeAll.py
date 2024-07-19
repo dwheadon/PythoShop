@@ -67,7 +67,7 @@ if __name__ == "__main__":
         test_package = test_file[: test_file.find(".")]
         print(test_package, end="\t")
     print("")
-    for student_folder in students.student_folders:
+    for student_folder in students.STUDENT_FOLDERS:
         orig_stdout = sys.stdout
         print("Testing: " + student_folder, file=sys.stderr)
         student = student_folder.split("/")[-1]

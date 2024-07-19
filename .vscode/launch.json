@@ -5,15 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Distribute files",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "admin/updateStudentsFiles.py",
-            "console": "integratedTerminal",
-            "justMyCode": false
-        },
-        {
-            "name": "Install prereqs",
+            "name": "0 - Prereqs: Install prereqs",
             "type": "debugpy",
             "request": "launch",
             "module": "pip",
@@ -26,15 +18,7 @@
             "justMyCode": true
         },
         {
-            "name": "PythoShop",
-            "type": "debugpy",
-            "request": "launch",
-            "program": "PythoShop.py",
-            "console": "integratedTerminal",
-            "justMyCode": true
-        },
-        {
-            "name": "Gen solution",
+            "name": "1 - Prep: Gen solution",
             "type": "debugpy",
             "request": "launch",
             "module": "pickleImages",
@@ -46,7 +30,23 @@
             }
         },
         {
-            "name": "Tests",
+            "name": "1 - Prep: Distribute files",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "admin/updateStudentsFiles.py",
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+        {
+            "name": "2 - Run: PythoShop",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "PythoShop.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "3 - Tests: Run Tests",
             "type": "debugpy",
             "request": "launch",
             "module": "testRunner",
@@ -58,19 +58,7 @@
             }
         },
         {
-            "name": "Test One",
-            "type": "debugpy",
-            "request": "launch",
-            "module": "gradeOne",
-            "console": "integratedTerminal",
-            "justMyCode": true,
-            "cwd": "${workspaceFolder}/tests",
-            "env": {
-                "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/admin:${workspaceFolder}/tests"
-            }
-        },
-        {
-            "name": "Test All",
+            "name": "4 - Assess: Grade All",
             "type": "debugpy",
             "request": "launch",
             "module": "gradeAll",
@@ -86,7 +74,19 @@
             }
         },
         {
-            "name": "Plagiarism check",
+            "name": "4 - Assess: Grade One",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "gradeOne",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "cwd": "${workspaceFolder}/tests",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/admin:${workspaceFolder}/tests"
+            }
+        },
+        {
+            "name": "4 - Assess: Plagiarism check",
             "type": "debugpy",
             "request": "launch",
             "module": "plagiarismCheck",

@@ -4,7 +4,7 @@ import shutil
 import os
 
 files = []
-for student_folder in students.student_folders:
+for student_folder in students.STUDENT_FOLDERS:
     student_file = '"' + student_folder + '/PythoShop/ImageManip.py"'
     files.append(student_file)
 

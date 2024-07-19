@@ -1,42 +1,46 @@
-import students
 import glob
-import shutil
 import os
-from stat import S_IREAD, S_IRGRP, S_IROTH, S_IWRITE, S_IWGRP, S_IWOTH
+import shutil
+from stat import S_IREAD, S_IRGRP, S_IROTH, S_IWGRP, S_IWOTH, S_IWRITE
+
+import students
 
 
 def copy_readonly_files(files, destination_folder):
-        # print("Verifying folder exists...")
+    # print("Verifying folder exists...")
+    try:
+        os.makedirs(destination_folder)
+    except FileExistsError:
+        pass
+    # print("Copying to " + destination_folder)
+    for file in files:
+        # print("    Copying " + str(file))
+        destination_file = os.path.join(destination_folder, os.path.basename(file))
         try:
-            os.makedirs(destination_folder)
-        except FileExistsError:
+            os.chmod(destination_file, S_IWRITE | S_IWGRP | S_IWOTH)
+        except:
             pass
-        # print("Copying to " + destination_folder)
-        for file in files:
-            # print("    Copying " + str(file))
-            destination_file = os.path.join(destination_folder, os.path.basename(file))
-            try:
-                os.chmod(destination_file, S_IWRITE|S_IWGRP|S_IWOTH)
-            except:
-                 pass
-            shutil.copy(file, destination_file)
-            os.chmod(destination_file, S_IREAD|S_IRGRP|S_IROTH)
+        shutil.copy(file, destination_file)
+        os.chmod(destination_file, S_IREAD | S_IRGRP | S_IROTH)
+
 
 files = [
-     '__init__.py',
-     'PythoShop.kv',
-     'PythoShop.py',
-     'PythoShopExports.py',
+    "__init__.py",
+    "PythoShop.kv",
+    "PythoShop.py",
+    "PythoShopExports.py",
+    "pythoshop.code-workspace",
 ]
 
 examples_images = glob.glob("images/*")
 
 vscode_files = [
-     '.vscode-students/launch.json',
+    ".vscode-students/launch.json",
+    # ".vscode-students/settings.json", # uncomment if want type checking
 ]
 
 test_files = []
-test_files +=  glob.glob("tests/testBase*")
+test_files += glob.glob("tests/testBase*")
 test_files += glob.glob("tests/testFile*")
 test_files += glob.glob("tests/testOrig*")
 test_files += glob.glob("tests/testRun*")
@@ -51,7 +55,7 @@ test_files += glob.glob("tests/test_0*")
 # test_files += glob.glob("tests/test_5*")
 # test_files += glob.glob("tests/test_6*")
 
-for student_folder in students.student_folders:
+for student_folder in students.STUDENT_FOLDERS:
     student_folder = os.path.join(student_folder, "PythoShop")
     student_vscode_folder = os.path.join(student_folder, ".vscode")
     student_test_folder = os.path.join(student_folder, "tests")
@@ -62,4 +66,4 @@ for student_folder in students.student_folders:
     copy_readonly_files(examples_images, student_images_folder)
     image_manip = os.path.join(student_folder, "ImageManip.py")
     if not os.path.exists(image_manip):
-        shutil.copy('ImageManipBlank.py', image_manip)
+        shutil.copy("ImageManipBlank.py", image_manip)
