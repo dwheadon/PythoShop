@@ -20,8 +20,8 @@ class TestTimeout:
     def __init__(self, seconds, error_message=None):
         if error_message is None:
             error_message = "test timed out after {}s.".format(seconds)
-            self.seconds = seconds
-            self.error_message = error_message
+        self.seconds = seconds
+        self.error_message = error_message
 
     def handle_timeout(self, signum, frame):
         raise TestTimeoutException(self.error_message)
@@ -134,58 +134,57 @@ class TestBase:
         pickled_solutions.close()
 
     def test_images(self):
-        with TestTimeout(10):
-            for image_set in self.image_sets:
-                image = image_set[0]
-                with self.subTest(i=image_set):
-                    random.seed(0)  # make it predictably random
-                    orig_file_name = image + ".bmp"
-                    test_file_name = self.manip_func_name + self.get_parameter_str() + "-" + image + ".bmp"
-                    static_manip_func = getattr(self.manip_module, self.manip_func_name)
-                    with tempfile.TemporaryFile() as image_file:
-                        image_file.write(self.original_images[orig_file_name])
+        for image_set in self.image_sets:
+            image = image_set[0]
+            with self.subTest(i=image_set), tempfile.TemporaryFile() as image_file:
+                random.seed(0)  # make it predictably random
+                orig_file_name = image + ".bmp"
+                test_file_name = self.manip_func_name + self.get_parameter_str() + "-" + image + ".bmp"
+                static_manip_func = getattr(self.manip_module, self.manip_func_name)
+                image_file.write(self.original_images[orig_file_name])
+                try:
+                    with TestTimeout(2):
+                        result = static_manip_func(image_file, **self.test_parameters)
+                except Exception as e:
+                    self.assertTrue(False, "Running on " + orig_file_name + " casused an exception: " + str(e))
+                if result == None:
+                    result = image_file
+                self.assertTrue(type(result) == io.BytesIO or type(result) == io.BufferedRandom or type(result) == tempfile._TemporaryFileWrapper)
+                solution_image = io.BytesIO(self.solution_images[test_file_name])
+                self.compare_headers(solution_image, result)
+                fpp1, width1, height1, row_size1, pad1 = self.get_info(solution_image)
+                fpp2, width2, height2, row_size2, pad2 = self.get_info(result)
+                for row in range(height1):
+                    for pixel in range(width1):
                         try:
-                            result = static_manip_func(image_file, **self.test_parameters)
-                        except Exception as e:
-                            self.assertTrue(False, "Running on " + orig_file_name + " casused an exception: " + str(e))
-                        if result == None:
-                            result = image_file
-                        self.assertTrue(type(result) == io.BytesIO or type(result) == io.BufferedRandom or type(result) == tempfile._TemporaryFileWrapper)
-                        solution_image = io.BytesIO(self.solution_images[test_file_name])
-                        self.compare_headers(solution_image, result)
-                        fpp1, width1, height1, row_size1, pad1 = self.get_info(solution_image)
-                        fpp2, width2, height2, row_size2, pad2 = self.get_info(result)
-                        for row in range(height1):
-                            for pixel in range(width1):
-                                try:
-                                    solution_image.seek(fpp1 + row_size1 * row + 3 * pixel)
-                                    result.seek(fpp2 + row_size2 * row + 3 * pixel)
-                                    correct_b, correct_g, correct_r = solution_image.read(3)
-                                    actual_b, actual_g, actual_r = result.read(3)
-                                except:
-                                    self.assertTrue(False, "Pixel at (" + str(pixel) + ", " + str(row) + ") could not be read.")
-                                if (
-                                    actual_b < correct_b - self.tolerance
-                                    or actual_b > correct_b + self.tolerance
-                                    or actual_g < correct_g - self.tolerance
-                                    or actual_g > correct_g + self.tolerance
-                                    or actual_r < correct_r - self.tolerance
-                                    or actual_r > correct_r + self.tolerance
-                                ):
-                                    pixel_index = fpp1 + row_size1 * row + 3 * pixel
-                                    original_b, original_g, original_r = self.original_images[orig_file_name][pixel_index : pixel_index + 3]
-                                    self.assertTrue(
-                                        False,
-                                        "Pixel at ("
-                                        + str(pixel)
-                                        + ", "
-                                        + str(row)
-                                        + ") is incorrect. \nOriginal was "
-                                        + str([original_b, original_g, original_r])
-                                        + "\nIt should be "
-                                        + str([correct_b, correct_g, correct_r])
-                                        + "\nBut actually "
-                                        + str([actual_b, actual_g, actual_r]),
-                                    )
-                            solution_image.seek(pad1, 1)
-                            result.seek(pad2, 1)
+                            solution_image.seek(fpp1 + row_size1 * row + 3 * pixel)
+                            result.seek(fpp2 + row_size2 * row + 3 * pixel)
+                            correct_b, correct_g, correct_r = solution_image.read(3)
+                            actual_b, actual_g, actual_r = result.read(3)
+                        except:
+                            self.assertTrue(False, "Pixel at (" + str(pixel) + ", " + str(row) + ") could not be read.")
+                        if (
+                            actual_b < correct_b - self.tolerance
+                            or actual_b > correct_b + self.tolerance
+                            or actual_g < correct_g - self.tolerance
+                            or actual_g > correct_g + self.tolerance
+                            or actual_r < correct_r - self.tolerance
+                            or actual_r > correct_r + self.tolerance
+                        ):
+                            pixel_index = fpp1 + row_size1 * row + 3 * pixel
+                            original_b, original_g, original_r = self.original_images[orig_file_name][pixel_index : pixel_index + 3]
+                            self.assertTrue(
+                                False,
+                                "Pixel at ("
+                                + str(pixel)
+                                + ", "
+                                + str(row)
+                                + ") is incorrect. \nOriginal was "
+                                + str([original_b, original_g, original_r])
+                                + "\nIt should be "
+                                + str([correct_b, correct_g, correct_r])
+                                + "\nBut actually "
+                                + str([actual_b, actual_g, actual_r]),
+                            )
+                    solution_image.seek(pad1, 1)
+                    result.seek(pad2, 1)
