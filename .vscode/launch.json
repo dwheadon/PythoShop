@@ -70,6 +70,18 @@
             }
         },
         {
+            "name": "Compare Visually",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "compareVisually",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/admin:${workspaceFolder}"
+            }
+        },
+        {
             "name": "Test All",
             "type": "debugpy",
             "request": "launch",
