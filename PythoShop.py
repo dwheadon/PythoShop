@@ -237,7 +237,7 @@ def _check_bmp_integrity(image: BytesIO) -> None:
     :returns: None
     """
     image.seek(0)
-    assert image.read(2) == b"\x42\x4D", "header field was invalid"
+    assert image.read(2) == b"\x42\x4d", "header field was invalid"
     file_byte_size = int.from_bytes(image.read(4), "little")
 
     image.seek(10)
@@ -353,7 +353,7 @@ class PhotoShopWidget(Widget):
 
     def load_image(self) -> None:
         if not PhotoShopWidget._file_chooser_popup:
-            PhotoShopWidget._file_chooser_popup = Popup(title="Choose an image", content=FileChooserDialog(rootpath=os.path.expanduser("~")))
+            PhotoShopWidget._file_chooser_popup = Popup(title="Choose an image", content=FileChooserDialog(rootpath=os.path.expanduser("./images")))
         PhotoShopWidget._file_chooser_popup.open()
 
     def save_image(self) -> None:
