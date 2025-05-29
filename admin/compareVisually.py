@@ -107,7 +107,7 @@ tests = [
     ("EnlargeBetter", "better_enlarge", ["flower.bmp"], {}),
     ("ResizeLarger", "resize", ["flower.bmp"], {"extra": "4"}),
     ("ResizeSmaller", "resize", ["flower.bmp"], {"extra": "0.2"}),
-    ("Autostereogram", "autostereograms", ["depthBoxes.bmp", "patternDots.bmp"], {}),
+    ("Autostereogram", "make_autostereogram", ["depthBoxes.bmp", "patternDots.bmp"], {}),
 ]
 
 if __name__ == "__main__":
@@ -179,6 +179,7 @@ if __name__ == "__main__":
                                 student_results.seek(0)
                                 shutil.copyfileobj(student_results, student_result_image_file)
                                 student_results = student_result_image_file
+                            student_results.flush()
                             solution_results = sol_function(*solution_images, **test_parameters)
                             if solution_results is None:
                                 solution_results = solution_images[0]
@@ -186,7 +187,7 @@ if __name__ == "__main__":
                                 solution_results.seek(0)
                                 shutil.copyfileobj(solution_results, solution_result_image_file)
                                 solution_results = solution_result_image_file
-
+                            solution_results.flush()
                             subprocess.run(["open", "-a", "Preview", student_results.name, solution_results.name], check=True)
                     except Exception as e:
                         print("Failed: " + str(e))
