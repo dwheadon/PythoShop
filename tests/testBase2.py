@@ -1,5 +1,8 @@
 import io
 import random
+import shutil
+import subprocess
+import sys
 import tempfile
 
 import testBase
@@ -18,6 +21,7 @@ class TestBase2(testBase.TestBase):
         self.__class__.test_parameters = self.__class__.test_parameters.copy()
 
     def test_images(self):
+        already_showed_failed_exemple = False
         if self.image_sets is None:
             assert False
         for image1_name, image2_name in self.image_sets:
@@ -61,6 +65,26 @@ class TestBase2(testBase.TestBase):
                             pixel_index = fpp1 + row_size1 * row + 3 * pixel
                             original1_b, original1_g, original1_r = self.original_images[image1_file_name][pixel_index : pixel_index + 3]
                             original2_b, original2_g, original2_r = self.original_images[image2_file_name][pixel_index : pixel_index + 3]
+                            # open the two images for visual inspection
+                            if not already_showed_failed_exemple:
+                                try:
+                                    with tempfile.NamedTemporaryFile(
+                                        suffix=".bmp", prefix=self.__module__ + "_" + image1_name + "," + image2_name + "_", delete=False
+                                    ) as student_image_file, tempfile.NamedTemporaryFile(
+                                        suffix=".bmp", prefix="solution_" + self.__module__ + "_" + image1_name + "," + image2_name + "_", delete=False
+                                    ) as solution_image_file:
+                                        # result.flush()
+                                        result.seek(0)
+                                        shutil.copyfileobj(result, student_image_file)
+                                        student_image_file.flush()
+                                        # solution_image.flush()
+                                        solution_image.seek(0)
+                                        shutil.copyfileobj(solution_image, solution_image_file)
+                                        solution_image_file.flush()
+                                        subprocess.run_during_test(["open", "-a", "Preview", student_image_file.name, solution_image_file.name], check=True)
+                                        already_showed_failed_exemple = True
+                                except Exception as e:
+                                    pass
                             self.assertTrue(
                                 False,
                                 "Pixel at ("

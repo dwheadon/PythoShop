@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import copy
 import subprocess
 import sys
 import unittest
@@ -12,8 +13,10 @@ def dummyRun(args, **kwargs):
     raise RuntimeError("You should not be calling the subprocess.run function within your manipulation functions (only in __main__)")
 
 
-sys.modules["subprocess"].run = dummyRun
-sys.modules["builtins"].input = dummyInput
+if not hasattr(sys.modules["subprocess"], "run_during_test"):
+    sys.modules["subprocess"].run_during_test = copy.deepcopy(sys.modules["subprocess"].run)
+    sys.modules["subprocess"].run = dummyRun
+    sys.modules["builtins"].input = dummyInput
 
 
 class TestResult(unittest.TextTestResult):

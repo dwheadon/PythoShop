@@ -5,7 +5,10 @@ import os
 import pickle
 import platform
 import random
+import shutil
 import signal
+import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -134,6 +137,7 @@ class TestBase:
         pickled_solutions.close()
 
     def test_images(self):
+        already_showed_failed_exemple = False
         for image_set in self.image_sets:
             image = image_set[0]
             with self.subTest(i=image_set), tempfile.TemporaryFile() as image_file:
@@ -173,6 +177,26 @@ class TestBase:
                         ):
                             pixel_index = fpp1 + row_size1 * row + 3 * pixel
                             original_b, original_g, original_r = self.original_images[orig_file_name][pixel_index : pixel_index + 3]
+                            # open the two images for visual inspection
+                            if not already_showed_failed_exemple:
+                                try:
+                                    with tempfile.NamedTemporaryFile(
+                                        suffix=".bmp", prefix=self.__module__ + "_" + image + "_", delete=False
+                                    ) as student_image_file, tempfile.NamedTemporaryFile(
+                                        suffix=".bmp", prefix="solution_" + self.__module__ + "_" + image + "_", delete=False
+                                    ) as solution_image_file:
+                                        # result.flush()
+                                        result.seek(0)
+                                        shutil.copyfileobj(result, student_image_file)
+                                        student_image_file.flush()
+                                        # solution_image.flush()
+                                        solution_image.seek(0)
+                                        shutil.copyfileobj(solution_image, solution_image_file)
+                                        solution_image_file.flush()
+                                        subprocess.run_during_test(["open", "-a", "Preview", student_image_file.name, solution_image_file.name], check=True)
+                                        already_showed_failed_exemple = True
+                                except Exception as e:
+                                    pass
                             self.assertTrue(
                                 False,
                                 "Pixel at ("
